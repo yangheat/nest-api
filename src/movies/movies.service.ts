@@ -1,17 +1,28 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Req, Res } from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie.dto';
+import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Movie } from './entity/movies.entity';
 
 @Injectable()
 export class MoviesService {
     private movies: Movie[] = [];
 
+    // NestJS는 Express, fastify 프레임워크를 사용함
+    // 따라서 NestJS 문법을 사용하여 선택하여 사용 할 수 있음
+    // fastify는 Express와 동일한 기능을 하지만 약 2배정도 빠르다고 함
+    // 일반적으로 Express를 사용하지만 더 빠른 속도가 필요할 경우 fastify 사용
+    // Express 형식의 Request, Respense 처리
+    // getAll(@Req() req, @Res() res): Movie[] {
+    //     res.json();
+    //     return this.movies;
+    // }
+
     getAll(): Movie[] {
         return this.movies;
     }
 
-    getOne(id: string): Movie {
-        const movie = this.movies.find(movie => movie.id === parseInt(id));
+    getOne(id: number): Movie {
+        const movie = this.movies.find(movie => movie.id === id);
 
         if(!movie) {
             throw new NotFoundException(`Movie with ID ${id} not fount.`);
@@ -20,9 +31,9 @@ export class MoviesService {
         return movie;
     }
 
-    deleteOne(id: string) {
+    deleteOne(id: number) {
         this.getOne(id);
-        this.movies = this.movies.filter(movie => movie.id !== +id)
+        this.movies = this.movies.filter(movie => movie.id !== id)
     }
 
     create(movieData: CreateMovieDto) {
@@ -32,19 +43,9 @@ export class MoviesService {
         })
     }
 
-    update(id: string, updateData) {
-        // console.log("service: " + JSON.stringify(updateData));
-
-        console.log("1: " + id);
-        console.log("2: " + JSON.stringify(updateData));
+    update(id: number, updateData: UpdateMovieDto) {
         const movie = this.getOne(id);
-        console.log("3: " + JSON.stringify(movie));
-        console.log("4: " + JSON.stringify(this.movies));
         this.deleteOne(id);
-        console.log("5: " + JSON.stringify(this.movies));
-        console.log("6: " + JSON.stringify(movie));
-        console.log("7: " + JSON.stringify(updateData));
         this.movies.push({...movie, ...updateData});
-        console.log("8: " + JSON.stringify(this.movies));
     }
 }
