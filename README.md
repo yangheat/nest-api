@@ -1,6 +1,7 @@
-# nest start
+# Normard Coder - NestJS로 API 만들기
+### nest start
 npm nest start
-# unit test
+##3 unit test
 npm run test
-# e2e test
+### e2e test
 npm run test:e2e
